@@ -8,30 +8,38 @@ import css from './Form/Form.module.css';
 
 export default class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
     
   };
+ 
+  componentDidMount() {
+		const localData = localStorage.getItem('contacts')
+		if (localData) {
+			this.setState({ contacts: JSON.parse(localData) })
+		}
+	}
 
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+			localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+		}
+  }
 
   addItem = e => {
     const id = nanoid();
     const name = e.name;
     const number = e.number;
-    const contactsLists = [...this.state.contacts];
-
-    if (contactsLists.findIndex(contact => name === contact.name) !== -1) {
+  
+    if (this.state.contacts.find(contact => name === contact.name)) {
       alert(`${name} is already in contacts.`);
-    } else {
-      contactsLists.push({ name, id, number });
+      return;
     }
-
-    this.setState({ contacts: contactsLists });
+  
+    const newContact = { id, name, number };
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
   handleChange = e => {
@@ -51,17 +59,7 @@ export default class App extends Component {
       contacts: prevState.contacts.filter(contact => contact.id !== e),
     }));
   };
-  componentDidMount () {
-console.log("mount")
-  };
-
-  componentDidUpdate () {
-    console.log("update")
-  }; 
-
-  componentWillUnmount () {
-    console.log("will")
-  }; 
+  
 
   render() {
     return (
@@ -83,4 +81,6 @@ console.log("mount")
     );
   }
 }
+
+
 
