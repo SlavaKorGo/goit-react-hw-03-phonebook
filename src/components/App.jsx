@@ -51,7 +51,17 @@ export default class App extends Component {
       contacts: prevState.contacts.filter(contact => contact.id !== e),
     }));
   };
-  
+  componentDidMount () {
+console.log("mount")
+  };
+
+  componentDidUpdate () {
+    console.log("update")
+  }; 
+
+  componentWillUnmount () {
+    console.log("will")
+  }; 
 
   render() {
     return (
@@ -74,4 +84,3 @@ export default class App extends Component {
   }
 }
 
-// export default App;
